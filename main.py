@@ -354,4 +354,3 @@ def run_with_func(func, pause=False):
 
 if __name__ == "__main__":
     main()
-    print("test")

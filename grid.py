@@ -24,6 +24,9 @@ class Grid:
 
         Should also intialise the brush size to the DEFAULT provided as a class variable.
         """
+        self.draw_style = draw_style
+        self.x = x
+        self.y = y
         raise NotImplementedError()
 
     def increase_brush_size(self):

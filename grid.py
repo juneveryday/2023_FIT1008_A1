@@ -32,6 +32,8 @@ class Grid:
         self.layer_x = x
         self.layer_y = y
 
+
+        #grid object initialising
         self.grid_x = ArrayR(self.layer_x) #[n,n,n,n,n,n]
 
         for i in self.grid_x:

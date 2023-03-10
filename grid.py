@@ -1,5 +1,6 @@
 from __future__ import annotations
 from data_structures.referential_array import ArrayR
+from layer_util import Layer
 
 class Grid:
     DRAW_STYLE_SET = "SET"
@@ -58,6 +59,7 @@ class Grid:
             self.brush_size -= 1
 
     def special(self):
+        #layer store 하고 나서 layer_util 응용해서 bg 를 써보면 될 것 같다.
         """
         Activate the special affect on all grid squares.
         """

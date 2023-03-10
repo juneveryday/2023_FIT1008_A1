@@ -1,4 +1,6 @@
 from __future__ import annotations
+from data_structures.referential_array import ArrayR
+
 class Grid:
     DRAW_STYLE_SET = "SET"
     DRAW_STYLE_ADD = "ADD"
@@ -30,6 +32,11 @@ class Grid:
         self.layer_x = x
         self.layer_y = y
 
+        self.grid_x = ArrayR(self.layer_x) #[n,n,n,n,n,n]
+
+        for i in self.grid_x:
+            self.grid_x[i] = ArrayR(self.layer_y)
+    
     def increase_brush_size(self):
         """
         Increases the size of the brush by 1,

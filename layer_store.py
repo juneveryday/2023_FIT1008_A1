@@ -44,8 +44,39 @@ class SetLayerStore(LayerStore):
     - erase: Remove the single layer. Ignore what is currently selected.
     - special: Invert the colour output.
     """
+    def __init__(self) -> None:
+        pass
 
-    pass
+    def add(self, layer: Layer) -> bool:
+        """
+        Add a layer to the store.
+        Returns true if the LayerStore was actually changed.
+        """
+        self.layer = layer
+
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+        """
+        Returns the colour this square should show, given the current layers.
+        """
+        self.start = start
+        self.timestamp = timestamp
+        self.x = x
+        self.y = y
+
+        return self.layer.apply(self.start,self.timestamp,self.x,self.y)
+
+    def erase(self, layer: Layer) -> bool:
+        """
+        Complete the erase action with this layer
+        Returns true if the LayerStore was actually changed.
+        """
+        pass
+
+    def special(self):
+        """
+        Special mode. Different for each store implementation.
+        """
+        pass
 
 class AdditiveLayerStore(LayerStore):
     """

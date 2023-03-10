@@ -52,7 +52,9 @@ class SetLayerStore(LayerStore):
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
+        
         self.layer = layer
+        return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -70,7 +72,7 @@ class SetLayerStore(LayerStore):
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
-        pass
+        self.layer = None
 
     def special(self):
         """

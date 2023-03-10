@@ -13,21 +13,22 @@ class Grid:
     MAX_BRUSH = 5
     MIN_BRUSH = 0
 
+    #Initialise the grid object.
     def __init__(self, draw_style, x, y) -> None:
         """
-        Initialise the grid object.
         - draw_style:
-            The style with which colours will be drawn.
-            Should be one of DRAW_STYLE_OPTIONS
+            The style (colours will be drawn) should be one of DRAW_STYLE_OPTIONS
             This draw style determines the LayerStore used on each grid square.
+
         - x, y: The dimensions of the grid.
 
         Should also intialise the brush size to the DEFAULT provided as a class variable.
         """
+        self.brush_size = self.DEFAULT_BRUSH_SIZE
         self.draw_style = draw_style
-        self.x = x
-        self.y = y
-        raise NotImplementedError()
+
+        self.layer_x = x
+        self.layer_y = y
 
     def increase_brush_size(self):
         """
@@ -35,7 +36,8 @@ class Grid:
         if the brush size is already MAX_BRUSH,
         then do nothing.
         """
-        raise NotImplementedError()
+        if self.brush_size < self.MAX_BRUSH:
+            self.brush_size += 1
 
     def decrease_brush_size(self):
         """
@@ -43,10 +45,11 @@ class Grid:
         if the brush size is already MIN_BRUSH,
         then do nothing.
         """
-        raise NotImplementedError()
+        if self.brush_size > self.MIN_BRUSH:
+            self.brush_size -= 1
 
     def special(self):
         """
         Activate the special affect on all grid squares.
         """
-        raise NotImplementedError()
+        r

@@ -52,9 +52,13 @@ class SetLayerStore(LayerStore):
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
+        # 만약 기존 레이어가 추가하는 것과 같다면 true가 나오면 안된다
         
-        self.layer = layer
-        return True
+        if layer.bg == layer:
+            return False
+        else:
+            self.layer = layer
+            return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -73,6 +77,7 @@ class SetLayerStore(LayerStore):
         Returns true if the LayerStore was actually changed.
         """
         self.layer = None
+        return True
 
     def special(self):
         """

@@ -59,4 +59,4 @@ class Grid:
         """
         Activate the special affect on all grid squares.
         """
-        r
+        pass

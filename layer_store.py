@@ -45,7 +45,7 @@ class SetLayerStore(LayerStore):
     - special: Invert the colour output.
     """
     def __init__(self) -> None:
-        pass
+        self.layer = None
 
     def add(self, layer: Layer) -> bool:
         """
@@ -54,11 +54,10 @@ class SetLayerStore(LayerStore):
         """
         # 만약 기존 레이어가 추가하는 것과 같다면 true가 나오면 안된다
         
-        if layer.bg == layer:
-            return False
-        else:
-            self.layer = layer
+        if self.layer == None or self.layer.bg != layer.bg:
             return True
+        else:
+            return False
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
@@ -69,6 +68,7 @@ class SetLayerStore(LayerStore):
         self.x = x
         self.y = y
 
+        #how we know the format of parameter of .apply?
         return self.layer.apply(self.start,self.timestamp,self.x,self.y)
 
     def erase(self, layer: Layer) -> bool:
@@ -76,8 +76,11 @@ class SetLayerStore(LayerStore):
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
-        self.layer = None
-        return True
+        if self.layer == None:
+            return False
+        else:
+            self.layer = None
+            return True
 
     def special(self):
         """
@@ -86,6 +89,7 @@ class SetLayerStore(LayerStore):
         pass
 
 class AdditiveLayerStore(LayerStore):
+    #stack_adt or queue_adt
     """
     Additive layer store. Each added layer applies after all previous ones.
     - add: Add a new layer to be added last.
@@ -96,6 +100,7 @@ class AdditiveLayerStore(LayerStore):
     pass
 
 class SequenceLayerStore(LayerStore):
+    # ArraySortedList
     """
     Sequential layer store. Each layer type is either applied / not applied, and is applied in order of index.
     - add: Ensure this layer type is applied.

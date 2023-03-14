@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from layer_util import Layer
+from layers import invert
 
 class LayerStore(ABC):
 
@@ -55,6 +56,7 @@ class SetLayerStore(LayerStore):
         # 만약 기존 레이어가 추가하는 것과 같다면 true가 나오면 안된다
         
         if self.layer == None or self.layer.bg != layer.bg:
+            self.layer = layer
             return True
         else:
             return False
@@ -87,14 +89,8 @@ class SetLayerStore(LayerStore):
         Special mode. Different for each store implementation.
         """
 
-        #The special mode keeps the current layer,
-        #  but always applies an inversion of the colours after the layer has been applied. 
-        # So if previously your Layer output (100, 100, 100) , 
-        # then it would now output (155, 155, 155).
-        #  See tests/test_layer_stores/test_set_layer.py for examples of this at play.
-
-        #layer_util 에서 class Layer 을 써야하는 것 같음
-        pass
+        print(self.layer.bg)
+        self.layer.bg = invert(self.layer.bg,self.timestamp,self.x,self.y)
 
 class AdditiveLayerStore(LayerStore):
     #stack_adt or queue_adt

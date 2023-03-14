@@ -63,4 +63,8 @@ class Grid:
         """
         Activate the special affect on all grid squares.
         """
-        pass
+        for list in self.grid_x:
+            for layer in list:
+                layer.special()
+
+

@@ -295,8 +295,10 @@ class MyWindow(arcade.Window):
 
     def on_paint(self, layer: Layer, px, py):
         """
-        Called when a grid square is clicked on, which should trigger painting in the vicinity.
-        Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) can be safely ignored.
+        Called when a grid square is clicked on, 
+        which should trigger painting in the vicinity.
+        Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) 
+        can be safely ignored.
 
         layer: The layer being applied.
         px: x position of the brush.

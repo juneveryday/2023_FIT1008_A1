@@ -86,6 +86,14 @@ class SetLayerStore(LayerStore):
         """
         Special mode. Different for each store implementation.
         """
+
+        #The special mode keeps the current layer,
+        #  but always applies an inversion of the colours after the layer has been applied. 
+        # So if previously your Layer output (100, 100, 100) , 
+        # then it would now output (155, 155, 155).
+        #  See tests/test_layer_stores/test_set_layer.py for examples of this at play.
+
+        #layer_util 에서 class Layer 을 써야하는 것 같음
         pass
 
 class AdditiveLayerStore(LayerStore):

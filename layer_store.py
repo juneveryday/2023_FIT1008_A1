@@ -89,7 +89,6 @@ class SetLayerStore(LayerStore):
         Special mode. Different for each store implementation.
         """
 
-        print(self.layer.bg)
         self.layer.bg = invert(self.layer.bg,self.timestamp,self.x,self.y)
 
 class AdditiveLayerStore(LayerStore):

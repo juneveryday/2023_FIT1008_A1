@@ -37,7 +37,7 @@ class Grid:
         #grid object initialising
         self.grid_x = ArrayR(self.layer_x) #[n,n,n,n,n,n]
 
-        for i in self.grid_x:
+        for i in range(len(self.grid_x)): 
             self.grid_x[i] = ArrayR(self.layer_y)
     
     def increase_brush_size(self):

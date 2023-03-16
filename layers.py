@@ -17,7 +17,7 @@ def rainbow(color, timestamp, x, y):
 @background(170, 170, 170)
 def black(color, timestamp, x, y):
     return (0, 0, 0)
-
+ 
 @register
 @background(240, 240, 240)
 def lighten(color, timestamp, x, y):

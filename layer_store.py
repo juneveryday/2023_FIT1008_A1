@@ -2,6 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from layers import invert
 from layer_util import Layer
+from data_structures.queue_adt import CircularQueue
+from data_structures.stack_adt import ArrayStack
 
 class LayerStore(ABC):
 
@@ -74,7 +76,6 @@ class SetLayerStore(LayerStore):
         if self.layer == None:
             return start
 
-
         if self.special_switch == True:
             new_bg = (self.layer.bg[0]-start[0], self.layer.bg[1]-start[1], self.layer.bg[2]-start[2])
 
@@ -108,13 +109,14 @@ class SetLayerStore(LayerStore):
 
         if self.special_switch == True:
             self.special_switch = False
-        
         else:
             self.special_switch = True
 
 
 class AdditiveLayerStore(LayerStore):
     #stack_adt or queue_adt
+    #stack_adt 에 Arraystack 있음
+
     """
     Additive layer store. Each added layer applies after all previous ones.
     - add: Add a new layer to be added last.
@@ -122,7 +124,81 @@ class AdditiveLayerStore(LayerStore):
     - special: Reverse the order of current layers (first becomes last, etc.)
     """
 
-    pass
+    def __init__(self) -> None:
+        self.queue = CircularQueue(900)
+        self.additive_special_switch = False
+        
+    def add(self, layer: Layer) -> bool:
+        """
+        Add a layer to the store.
+        Returns true if the LayerStore was actually changed.
+        """
+        if self.queue.is_full():
+            return False
+        else:
+            self.queue.append(layer)
+            return True
+    
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+        """
+        Returns the colour this square should show, given the current layers.
+
+        The argument for erase does not matter for an AdditiveLayerStore, because as per assignment brief,
+          it always removes the oldest remaining layer.
+          It nevertheless requires an arbitrary argument for the same reasons
+        """
+        # no length, return start
+        if self.queue.is_empty():
+            return start
+
+ 
+        for i in range(self.queue.front,self.queue.length+self.queue.front):
+            #first time
+            if i == self.queue.front:
+                color = self.queue.array[i].apply(start, timestamp, x, y)
+
+            #after first time
+            else:
+                color = self.queue.array[i].apply(color, timestamp, x, y)
+
+        return color
+        
+
+    def erase(self, layer: Layer) -> bool:
+        """
+        Complete the erase action with this layer
+        Returns true if the LayerStore was actually changed.
+        """
+ 
+        if self.queue.is_empty(): 
+            return False
+        
+        else: 
+            self.queue.serve()
+            return True
+
+    def special(self):
+        """
+        Special mode. Different for each store implementation.
+        """
+
+        # first, we have queue
+        # Queue : [R, L1, L2] -> serve (return item)
+        # item -> push to stack [R, L1, L2]
+        # Stack : pop -> push to another stack [L2, L1, R]
+
+        special_stack = ArrayStack(self.queue.length)
+
+        # the number of length, they will continue push from that we served.
+        for i in range(self.queue.length):
+            if self.queue.array[i] != None:
+                special_stack.push(self.queue.serve())
+
+        # now we have stack. still need to pop and push again.
+        for i in range(special_stack.length):
+            self.queue.append(special_stack.pop())
+
+        
 
 class SequenceLayerStore(LayerStore):
     # ArraySortedList

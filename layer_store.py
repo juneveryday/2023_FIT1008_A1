@@ -113,7 +113,6 @@ class SetLayerStore(LayerStore):
         else:
             self.special_switch = True
 
-
 class AdditiveLayerStore(LayerStore):
     """
     Additive layer store. Each added layer applies after all previous ones.
@@ -203,17 +202,22 @@ class SequenceLayerStore(LayerStore):
     - special:
         Of all currently applied layers, remove the one with median `name`.
         In the event of two layers being the median names, pick the lexicographically smaller one.
-
     """
     def __init__(self) -> None:
-        pass
+        self.Seq_sorted_list = ArraySortedList(9)
 
     def add(self, layer: Layer) -> bool:
         """
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
-        pass
+        # if aldy contain
+        if self.Seq_sorted_list.__contains__(layer):
+            return False
+        
+        # if there is no layer
+        else:
+            pass
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """

@@ -4,6 +4,7 @@ from layers import invert
 from layer_util import Layer
 from data_structures.queue_adt import CircularQueue
 from data_structures.stack_adt import ArrayStack
+from data_structures.array_sorted_list import ArraySortedList
 
 class LayerStore(ABC):
 
@@ -114,9 +115,6 @@ class SetLayerStore(LayerStore):
 
 
 class AdditiveLayerStore(LayerStore):
-    #stack_adt or queue_adt
-    #stack_adt 에 Arraystack 있음
-
     """
     Additive layer store. Each added layer applies after all previous ones.
     - add: Add a new layer to be added last.
@@ -126,7 +124,6 @@ class AdditiveLayerStore(LayerStore):
 
     def __init__(self) -> None:
         self.queue = CircularQueue(900)
-        self.additive_special_switch = False
         
     def add(self, layer: Layer) -> bool:
         """
@@ -191,14 +188,11 @@ class AdditiveLayerStore(LayerStore):
 
         # the number of length, they will continue push from that we served.
         for i in range(self.queue.length):
-            if self.queue.array[i] != None:
-                special_stack.push(self.queue.serve())
+            special_stack.push(self.queue.serve())
 
         # now we have stack. still need to pop and push again.
         for i in range(special_stack.length):
             self.queue.append(special_stack.pop())
-
-        
 
 class SequenceLayerStore(LayerStore):
     # ArraySortedList
@@ -209,6 +203,33 @@ class SequenceLayerStore(LayerStore):
     - special:
         Of all currently applied layers, remove the one with median `name`.
         In the event of two layers being the median names, pick the lexicographically smaller one.
-    """
 
-    pass
+    """
+    def __init__(self) -> None:
+        pass
+
+    def add(self, layer: Layer) -> bool:
+        """
+        Add a layer to the store.
+        Returns true if the LayerStore was actually changed.
+        """
+        pass
+
+    def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+        """
+        Returns the colour this square should show, given the current layers.
+        """
+        pass
+
+    def erase(self, layer: Layer) -> bool:
+        """
+        Complete the erase action with this layer
+        Returns true if the LayerStore was actually changed.
+        """
+        pass
+    
+    def special(self):
+        """
+        Special mode. Different for each store implementation.
+        """
+        pass

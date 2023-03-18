@@ -1,6 +1,7 @@
 from __future__ import annotations
 from data_structures.referential_array import ArrayR
 from layer_util import Layer
+from layer_store import *
 
 class Grid:
     DRAW_STYLE_SET = "SET"
@@ -30,15 +31,22 @@ class Grid:
         self.brush_size = self.DEFAULT_BRUSH_SIZE
         self.draw_style = draw_style
 
-        self.layer_x = x
-        self.layer_y = y
-
-
         #grid object initialising
-        self.grid_x = ArrayR(self.layer_x) #[n,n,n,n,n,n]
+        self.grid = ArrayR(x) #[n,n,n,n,n,n]
 
-        for i in range(len(self.grid_x)): 
-            self.grid_x[i] = ArrayR(self.layer_y)
+        for i in range(len(self.grid)): 
+            self.grid[i] = ArrayR(y)
+        
+        if draw_style == self.DRAW_STYLE_SET:
+            for i in range(len(self.grid)):
+                for j in range(len(self.grid[i])):
+                    self.grid[i][j] = SetLayerStore()
+        elif draw_style == self.DRAW_STYLE_ADD:
+            for i in range(len(self.grid)):
+                for j in range(len(self.grid[i])):
+                    self.grid[i][j] = AdditiveLayerStore()
+        # elif draw_style == self.DRAW_STYLE_SEQUENCE:
+            
     
     def increase_brush_size(self):
         """
@@ -63,8 +71,10 @@ class Grid:
         """
         Activate the special affect on all grid squares.
         """
-        for list in self.grid_x:
+        for list in self.grid:
             for layer in list:
                 layer.special()
 
+    def __getitem__(self, i):
+        return self.grid[i]
 

@@ -4,6 +4,7 @@ import math
 from grid import Grid
 from layer_util import get_layers, Layer
 from layers import lighten
+from layer_store import *
 
 class MyWindow(arcade.Window):
     """ Painter Window """
@@ -287,7 +288,7 @@ class MyWindow(arcade.Window):
 
     def on_init(self):
         """Initialisation that occurs after the system initialisation."""
-        pass
+        self.grid = Grid(self.draw_style, self.GRID_SIZE_X, self.GRID_SIZE_Y)
 
     def on_reset(self):
         """Called when a window reset is requested."""
@@ -304,7 +305,7 @@ class MyWindow(arcade.Window):
         px: x position of the brush.
         py: y position of the brush.
         """
-        pass
+        self.grid[px][py].add(layer)
 
     def on_undo(self):
         """Called when an undo is requested."""
@@ -316,7 +317,7 @@ class MyWindow(arcade.Window):
 
     def on_special(self):
         """Called when the special action is requested."""
-        pass
+        self.grid.special()
 
     def on_replay_start(self):
         """Called when the replay starting is requested."""

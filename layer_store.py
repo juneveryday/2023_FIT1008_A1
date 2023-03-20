@@ -41,7 +41,6 @@ class LayerStore(ABC):
         """
         pass
 
-
 class SetLayerStore(LayerStore):
     """
     Set layer store. A single layer can be stored at a time (or nothing at all)
@@ -217,7 +216,7 @@ class SequenceLayerStore(LayerStore):
         
         # if there is no layer
         else:
-            pass
+            pass    
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """

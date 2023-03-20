@@ -1,10 +1,11 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from layers import invert
+from layers import *
 from layer_util import Layer
 from data_structures.queue_adt import CircularQueue
 from data_structures.stack_adt import ArrayStack
 from data_structures.array_sorted_list import ArraySortedList
+from data_structures.sorted_list_adt import ListItem
 
 class LayerStore(ABC):
 
@@ -145,7 +146,6 @@ class AdditiveLayerStore(LayerStore):
         # no length, return start
         if self.queue.is_empty():
             return start
-
  
         for i in range(self.queue.front,self.queue.length+self.queue.front):
             #first time
@@ -203,7 +203,7 @@ class SequenceLayerStore(LayerStore):
         In the event of two layers being the median names, pick the lexicographically smaller one.
     """
     def __init__(self) -> None:
-        self.Seq_sorted_list = ArraySortedList(9)
+        self.list = ArraySortedList(9)
 
     def add(self, layer: Layer) -> bool:
         """
@@ -211,28 +211,57 @@ class SequenceLayerStore(LayerStore):
         Returns true if the LayerStore was actually changed.
         """
         # if aldy contain
-        if self.Seq_sorted_list.__contains__(layer):
+        if layer in self.list.array:
             return False
-        
         # if there is no layer
         else:
-            pass    
+            new_item = ListItem(layer, layer.index)
+            self.list.add(new_item)
+            return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
         """
-        pass
+        if len(self.list) == 0:
+            return start
+        
+        for i in range(len(self.list)):
+            layer = self.list[i].value
+            if i == 0:
+                color = layer.apply(start, timestamp, x, y)
+            else:
+                color = layer.apply(color, timestamp, x, y)
+        return color
 
     def erase(self, layer: Layer) -> bool:
         """
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
-        pass
+        for i in range(len(self.list)):
+            if self.list[i].key == layer.index:
+                self.list.delete_at_index(i)
+                return True
+        return False
+
     
     def special(self):
         """
         Special mode. Different for each store implementation.
         """
-        pass
+        alpha_sort = ArraySortedList(self.list.length)
+
+        for list_item in self.list:
+            print(list_item)
+            if list_item is not None:
+                key = list_item.value.name
+                value = list_item.value
+                alpha_sort.add(ListItem(value, key))
+        
+        if len(alpha_sort) % 2 == 1:
+            layer = alpha_sort[len(alpha_sort)//2].value
+        else:
+            layer = alpha_sort[(len(alpha_sort)//2)-1].value
+        self.erase(layer)
+        print(self.list)

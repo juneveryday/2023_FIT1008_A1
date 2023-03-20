@@ -41,6 +41,7 @@ class Grid:
             for i in range(len(self.grid)):
                 for j in range(len(self.grid[i])):
                     self.grid[i][j] = SetLayerStore()
+                    
         elif draw_style == self.DRAW_STYLE_ADD:
             for i in range(len(self.grid)):
                 for j in range(len(self.grid[i])):

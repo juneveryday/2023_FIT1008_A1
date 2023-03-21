@@ -226,6 +226,7 @@ class SequenceLayerStore(LayerStore):
         if len(self.list) == 0:
             return start
         
+        
         for i in range(len(self.list)):
             layer = self.list[i].value
             if i == 0:
@@ -251,17 +252,21 @@ class SequenceLayerStore(LayerStore):
         Special mode. Different for each store implementation.
         """
         alpha_sort = ArraySortedList(self.list.length)
-
+        # print("start")
         for list_item in self.list:
-            print(list_item)
+            
             if list_item is not None:
+                # print("list_item is",list_item)
                 key = list_item.value.name
-                value = list_item.value
+
+                value = list_item.value #layer
                 alpha_sort.add(ListItem(value, key))
+                
+                if len(alpha_sort) % 2 == 1:
+                    layer = alpha_sort[len(alpha_sort)//2].value
+                else:
+                    layer = alpha_sort[(len(alpha_sort)//2)-1].value
         
-        if len(alpha_sort) % 2 == 1:
-            layer = alpha_sort[len(alpha_sort)//2].value
-        else:
-            layer = alpha_sort[(len(alpha_sort)//2)-1].value
+        # print("going to erase ",layer)
         self.erase(layer)
-        print(self.list)
+        # print("finish is",self.list)

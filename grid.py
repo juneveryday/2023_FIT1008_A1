@@ -30,7 +30,8 @@ class Grid:
         """
         self.brush_size = self.DEFAULT_BRUSH_SIZE
         self.draw_style = draw_style
-
+        self.x = x
+        self.y = y
         #grid object initialising
         self.grid = ArrayR(x) #[n,n,n,n,n,n]
 

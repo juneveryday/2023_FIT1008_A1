@@ -210,22 +210,23 @@ class SequenceLayerStore(LayerStore):
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
-        # if aldy contain
-        if layer in self.list.array:
-            return False
-        # if there is no layer
-        else:
-            new_item = ListItem(layer, layer.index)
-            self.list.add(new_item)
-            return True
+        for i in range(self.list.length):
+            index = self.list[i].key
+            if layer.index == index:
+                return False
+            
+        # if there is no layer in list
+        new_item = ListItem(layer, layer.index)
+        self.list.add(new_item)
+        return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
         """
-        if len(self.list) == 0:
+
+        if self.list.length == 0:
             return start
-        
         
         for i in range(len(self.list)):
             layer = self.list[i].value
@@ -252,21 +253,17 @@ class SequenceLayerStore(LayerStore):
         Special mode. Different for each store implementation.
         """
         alpha_sort = ArraySortedList(self.list.length)
-        # print("start")
-        for list_item in self.list:
-            
-            if list_item is not None:
-                # print("list_item is",list_item)
-                key = list_item.value.name
-
-                value = list_item.value #layer
-                alpha_sort.add(ListItem(value, key))
-                
-                if len(alpha_sort) % 2 == 1:
-                    layer = alpha_sort[len(alpha_sort)//2].value
-                else:
-                    layer = alpha_sort[(len(alpha_sort)//2)-1].value
         
-        # print("going to erase ",layer)
+        for i in range(self.list.length):
+            list_item = self.list[i]
+            key = list_item.value.name #black, darken, rainbow etc
+            value = list_item.value #layer
+            alpha_sort.add(ListItem(value, key))
+
+        if len(alpha_sort) % 2 == 1:
+            layer = alpha_sort[len(alpha_sort)//2].value
+        else:
+            layer = alpha_sort[(len(alpha_sort)//2)-1].value
+            
         self.erase(layer)
-        # print("finish is",self.list)
+ 

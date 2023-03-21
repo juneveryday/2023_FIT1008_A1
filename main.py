@@ -305,6 +305,7 @@ class MyWindow(arcade.Window):
         px: x position of the brush.
         py: y position of the brush.
         """
+        
         self.grid[px][py].add(layer)
 
     def on_undo(self):

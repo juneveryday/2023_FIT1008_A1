@@ -211,8 +211,8 @@ class SequenceLayerStore(LayerStore):
         Returns true if the LayerStore was actually changed.
         """
         for i in range(self.list.length):
-            index = self.list[i].key
-            if layer.index == index:
+            index = self.list[i].key #it will be index in list
+            if layer.index == index: #lighten, darken etc
                 return False
             
         # if there is no layer in list
@@ -221,17 +221,22 @@ class SequenceLayerStore(LayerStore):
         return True
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
+
         """
         Returns the colour this square should show, given the current layers.
         """
 
+        # if there is nothing, then return start color
         if self.list.length == 0:
             return start
         
+        # the number of length of list.
         for i in range(len(self.list)):
             layer = self.list[i].value
+            #check this is first or not.
             if i == 0:
                 color = layer.apply(start, timestamp, x, y)
+            #if not first, keep apply.
             else:
                 color = layer.apply(color, timestamp, x, y)
         return color
@@ -241,7 +246,9 @@ class SequenceLayerStore(LayerStore):
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
+        # the number of length of list.
         for i in range(len(self.list)):
+            # if key is same value with index. delete at index.
             if self.list[i].key == layer.index:
                 self.list.delete_at_index(i)
                 return True
@@ -252,18 +259,31 @@ class SequenceLayerStore(LayerStore):
         """
         Special mode. Different for each store implementation.
         """
+        # I am going to make new sorted list, the length is based on self.list.length
         alpha_sort = ArraySortedList(self.list.length)
         
+        # the number of length of list.
         for i in range(self.list.length):
             list_item = self.list[i]
-            key = list_item.value.name #black, darken, rainbow etc
-            value = list_item.value #layer
+
+            #black, darken, rainbow etc 
+            key = list_item.value.name 
+            
+            #layer
+            value = list_item.value
+
+            #based on the sort, add into alpha_sort
+            # so the value will be sorted with alphabetically.
             alpha_sort.add(ListItem(value, key))
 
+        # if the number of length is odd number
         if len(alpha_sort) % 2 == 1:
             layer = alpha_sort[len(alpha_sort)//2].value
+
+        # if the number of length is even number
         else:
             layer = alpha_sort[(len(alpha_sort)//2)-1].value
-            
+        
+        # erase that layer.
         self.erase(layer)
  

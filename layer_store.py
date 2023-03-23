@@ -219,6 +219,7 @@ class SequenceLayerStore(LayerStore):
         new_item = ListItem(layer, layer.index)
         self.list.add(new_item)
         return True
+        
 
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
 
@@ -233,11 +234,12 @@ class SequenceLayerStore(LayerStore):
         # the number of length of list.
         for i in range(len(self.list)):
             layer = self.list[i].value
+            #layer is (index=0, apply=<function rainbow at 0x105313ba0>, name='rainbow', bg=(200, 0, 120)
             #check this is first or not.
             if i == 0:
                 color = layer.apply(start, timestamp, x, y)
             #if not first, keep apply.
-            else:
+            else:   
                 color = layer.apply(color, timestamp, x, y)
         return color
 
@@ -246,7 +248,7 @@ class SequenceLayerStore(LayerStore):
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
-        # the number of length of list.
+        #the number of length of list.
         for i in range(len(self.list)):
             # if key is same value with index. delete at index.
             if self.list[i].key == layer.index:
@@ -254,8 +256,9 @@ class SequenceLayerStore(LayerStore):
                 return True
         return False
 
-    
-    def special(self):
+
+
+    def special(self):  
         """
         Special mode. Different for each store implementation.
         """

@@ -32,7 +32,10 @@ class UndoTracker:
 
         :return: The action that was undone, or None.
         """
-        Undo_item = self.Undo_list.pop(grid)
+        if self.Undo_list.is_empty() == True:
+            return None
+        Undo_item = self.Undo_list.pop()
+        Undo_item.undo_apply(grid)
         self.Redo_list.push(Undo_item)
         return Undo_item
 
@@ -43,6 +46,10 @@ class UndoTracker:
 
         :return: The action that was redone, or None.
         """
-        Redo_item = self.Redo_list.pop(grid)
+        if self.Redo_list.is_empty() == True:
+            return None
+
+        Redo_item = self.Redo_list.pop()
+        Redo_item.redo_apply(grid)
         self.Undo_list.push(Redo_item)
         return Redo_item

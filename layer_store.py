@@ -44,6 +44,8 @@ class LayerStore(ABC):
 
 class SetLayerStore(LayerStore):
     """
+    The SetLayerStore simply remembers the last layer that was applied, and applies that.
+
     Set layer store. A single layer can be stored at a time (or nothing at all)
     - add: Set the single layer.
     - erase: Remove the single layer. Ignore what is currently selected.
@@ -52,6 +54,9 @@ class SetLayerStore(LayerStore):
     
     def __init__(self) -> None:
         self.layer = None
+
+        # we will make special_switch for sepcial function.
+        # so, when special is called, special switch will become True.
         self.special_switch = False
 
     def add(self, layer: Layer) -> bool:
@@ -59,42 +64,61 @@ class SetLayerStore(LayerStore):
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
+
+        # if layer is None or layer.bg is different with layer.bg,
+        # we will add the layer to our layer.
+        # For example : s.add(black) 
+        # '.bg' is from layer_util.py tuple[int,int,int] format.
+         
         if self.layer == None or self.layer.bg != layer.bg:
             self.layer = layer
             return True
+        
+        # if self.layer.bg and layer.bg is same, then we will just return False.
         else:
             return False
+    
+
     
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
         """
  
-        # Here we can see that there is no layer currently applied, 
-        # and so the color we give as input is also the color we receive as output. 
-        # You can look through the other tests and see how the layers modify the input color. 
-
+        # if self.layer is None, return start.
         if self.layer == None:
             return start
 
+
+        # if this get_color function is called after we used special function.
         if self.special_switch == True:
+
+            # new_bg will calculate each index from tuple.
+            # (a,b,c) - (x,y,z) -> (a-x), (b-y), (c-z)
             new_bg = (self.layer.bg[0]-start[0], self.layer.bg[1]-start[1], self.layer.bg[2]-start[2])
 
+            # it will return the value after we apply to new_bg.
             return invert.apply(new_bg,timestamp,x,y)
             
-        
+        # if special_switch is not called, just apply start.
         else:
             return self.layer.apply(start,timestamp,x,y)
         
 
     def erase(self, layer: Layer) -> bool:
         """
-        Complete the erase action with this layer
-        Returns true if the LayerStore was actually changed.
+        The erase function returns true if the LayerStore was actually changed.
+
+        For example: erase(invert)
         """
+
+        # If self.layer is None, the LayerStore wont be changed anything.
+        # Therefore, we will return False.
         if self.layer == None:
             return False
         
+        # If self.layer is not None, it means, the LayerStore will be actually changed.
+        # Therefore, we will make our layer empty(None), then we will return True. 
         else:
             self.layer = None
             return True
@@ -103,34 +127,60 @@ class SetLayerStore(LayerStore):
         """
         Special mode. Different for each store implementation.
 
-        everytiime special is called, make a random variable, set it to true.
-        in get color, I check if the value is true, then after I apply the layer, then I invert if the value is ture
-        otherwise, get_color.
+        The special mode on a SetLayerStore keeps the current layer,
+        but always applies an inversion of the colours after the layer has been applied. 
+        So if previously your Layer output (100, 100, 100) , then it would now output (155, 155, 155).
         """
 
+        #If special function is called. We will make the switch is False again.
+        #So that, If the special function is called again, we can use this switch repeated.
+        #After that, we will calculate in the function get_color. 
+
+        # If special function is called already, make it False.
         if self.special_switch == True:
             self.special_switch = False
+
+        # If special function is just called, switch(False) make it True.
         else:
             self.special_switch = True
 
 class AdditiveLayerStore(LayerStore):
     """
-    Additive layer store. Each added layer applies after all previous ones.
+    The Additive Layer Store simply applies layers consecutively. 
+    Whenever a store has a collection of layers,
+    these layers are applied one-by-one,
+    from earliest added to latest added.
+
+
     - add: Add a new layer to be added last.
     - erase: Remove the first layer that was added. Ignore what is currently selected.
     - special: Reverse the order of current layers (first becomes last, etc.)
     """
 
+    # I used QueueADT which is called in CircularQueue()
+    # so that I can use FIFO(First In First Out)
     def __init__(self) -> None:
+        # Since multiple copies of the same layer can be used in this mode,
+        # make the capacity of the store at least 100 times the number of layers.
+        # Therefore, The Maximum of CircularQueue will be 9*100 = 900.
         self.queue = CircularQueue(900)
         
     def add(self, layer: Layer) -> bool:
         """
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
+
+        For example, s.add(black)
         """
+
+        # First, I am going to check the queue is full or not.
+        # Because if queue is full, we need to return False cuz we cannot add anymore.
         if self.queue.is_full():
             return False
+        
+        # If the layer is not full, it means I stll can add the layer to our queue.
+        # Therefore, I am going to add with the function in array, called append.
+        # Also, I will return True cuz the LayerStore will be actaully changed.
         else:
             self.queue.append(layer)
             return True
@@ -138,33 +188,37 @@ class AdditiveLayerStore(LayerStore):
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
-
-        The argument for erase does not matter for an AdditiveLayerStore, because as per assignment brief,
-          it always removes the oldest remaining layer.
-          It nevertheless requires an arbitrary argument for the same reasons
         """
-        # no length, return start
+
+        # If the queue is empty, I will return start.
         if self.queue.is_empty():
             return start
  
+
+        # From the "queue.front" to "queue.front+queue.length"
+        # It means we will check all the value that is not empty.
         for i in range(self.queue.front,self.queue.length+self.queue.front):
-            #first time
+            # First time will be start.
             if i == self.queue.front:
                 color = self.queue.array[i].apply(start, timestamp, x, y)
 
-            #after first time
+            # After first time, we will keep apply the last color to current color.
             else:
                 color = self.queue.array[i].apply(color, timestamp, x, y)
 
+        # Return color
         return color
         
 
     def erase(self, layer: Layer) -> bool:
         """
-        Complete the erase action with this layer
-        Returns true if the LayerStore was actually changed.
+        Complete the erase action with this layer, Returns true if the LayerStore was actually changed.
+        
+        The argument for erase does not matter for an AdditiveLayerStore,
+        because as per assignment brief, it always removes the oldest remaining layer.
         """
- 
+
+
         if self.queue.is_empty(): 
             return False
         
@@ -255,8 +309,6 @@ class SequenceLayerStore(LayerStore):
                 self.list.delete_at_index(i)
                 return True
         return False
-
-
 
     def special(self):  
         """

@@ -7,6 +7,7 @@ from data_structures.stack_adt import ArrayStack
 from data_structures.array_sorted_list import ArraySortedList
 from data_structures.sorted_list_adt import ListItem
 
+
 class LayerStore(ABC):
 
     def __init__(self) -> None:
@@ -316,29 +317,28 @@ class SequenceLayerStore(LayerStore):
         """
         # I am going to make new sorted list, the length is based on self.list.length
         alpha_sort = ArraySortedList(self.list.length)
-        
+        if len(self.list) > 0 : 
         # the number of length of list.
-        for i in range(self.list.length):
-            list_item = self.list[i]
+            for i in range(self.list.length):
+                list_item = self.list[i]
+                
+                #black, darken, rainbow etc 
+                key = list_item.value.name 
+                
+                #layer
+                value = list_item.value
 
-            #black, darken, rainbow etc 
-            key = list_item.value.name 
+                #based on the sort, add into alpha_sort
+                # so the value will be sorted with alphabetically.  
+                alpha_sort.add(ListItem(value, key))
+                
+            # if the number of length is odd number
+            if len(alpha_sort) % 2 == 1:
+                layer = alpha_sort[len(alpha_sort)//2].value
+
+            # if the number of length is even number
+            else:
+                layer = alpha_sort[(len(alpha_sort)//2)-1].value
             
-            #layer
-            value = list_item.value
-
-            #based on the sort, add into alpha_sort
-            # so the value will be sorted with alphabetically.
-            alpha_sort.add(ListItem(value, key))
-
-        # if the number of length is odd number
-        if len(alpha_sort) % 2 == 1:
-            layer = alpha_sort[len(alpha_sort)//2].value
-
-        # if the number of length is even number
-        else:
-            layer = alpha_sort[(len(alpha_sort)//2)-1].value
-        
-        # erase that layer.
-        self.erase(layer)
- 
+            # erase that layer.
+            self.erase(layer)

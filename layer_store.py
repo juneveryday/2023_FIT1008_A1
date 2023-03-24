@@ -317,7 +317,9 @@ class SequenceLayerStore(LayerStore):
         """
         # I am going to make new sorted list, the length is based on self.list.length
         alpha_sort = ArraySortedList(self.list.length)
+        
         if len(self.list) > 0 : 
+
         # the number of length of list.
             for i in range(self.list.length):
                 list_item = self.list[i]

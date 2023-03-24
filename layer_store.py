@@ -90,7 +90,6 @@ class SetLayerStore(LayerStore):
         if self.layer == None:
             return start
 
-
         # if this get_color function is called after we used special function.
         if self.special_switch == True:
 
@@ -257,22 +256,39 @@ class SequenceLayerStore(LayerStore):
         Of all currently applied layers, remove the one with median `name`.
         In the event of two layers being the median names, pick the lexicographically smaller one.
     """
+
+    # I used the ArraySortedList for SequenceLayerStore.
+    # The maximum_capacity will be 9, cuz the the number of layers is total 9.
     def __init__(self) -> None:
         self.list = ArraySortedList(9)
+
+
 
     def add(self, layer: Layer) -> bool:
         """
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
         """
+
+        
         for i in range(self.list.length):
-            index = self.list[i].key #it will be index in list
-            if layer.index == index: #lighten, darken etc
+            
+            # Make the "key_value" for check list[i].key
+            # It will be index in list
+            key_value = self.list[i].key 
+
+            # If layer.index is equal to key_value(index),
+            # it means that the layer is already exist in the list.
+            # Therefore, it will return False.
+            if layer.index == key_value: 
                 return False
             
         # if there is no layer in list
+        # it will make ListItem called new_item so that it will be added to self.list
         new_item = ListItem(layer, layer.index)
         self.list.add(new_item)
+
+        #LayerStore is actually changed, so return True.
         return True
         
 
@@ -282,20 +298,22 @@ class SequenceLayerStore(LayerStore):
         Returns the colour this square should show, given the current layers.
         """
 
-        # if there is nothing, then return start color
+        # If there is nothing (checked with length), then return start color.
         if self.list.length == 0:
             return start
         
-        # the number of length of list.
+        # The number of length of list.
         for i in range(len(self.list)):
             layer = self.list[i].value
-            #layer is (index=0, apply=<function rainbow at 0x105313ba0>, name='rainbow', bg=(200, 0, 120)
-            #check this is first or not.
+            
+            # If this loop is first time, color will be applied with "start"
             if i == 0:
                 color = layer.apply(start, timestamp, x, y)
+
             #if not first, keep apply.
             else:   
                 color = layer.apply(color, timestamp, x, y)
+
         return color
 
     def erase(self, layer: Layer) -> bool:
@@ -303,12 +321,19 @@ class SequenceLayerStore(LayerStore):
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
         """
-        #the number of length of list.
+
+        #The number of length of list.
         for i in range(len(self.list)):
-            # if key is same value with index. delete at index.
+
+            # If key is same value with index. delete at index.
             if self.list[i].key == layer.index:
+
+                #As using the funtion "delete_at_index",
+                #  the index i+1 will be shuffle_left.
                 self.list.delete_at_index(i)
+
                 return True
+            
         return False
 
     def special(self):  
@@ -317,10 +342,10 @@ class SequenceLayerStore(LayerStore):
         """
         # I am going to make new sorted list, the length is based on self.list.length
         alpha_sort = ArraySortedList(self.list.length)
-        
+
         if len(self.list) > 0 : 
 
-        # the number of length of list.
+        # The number of length of list.
             for i in range(self.list.length):
                 list_item = self.list[i]
                 

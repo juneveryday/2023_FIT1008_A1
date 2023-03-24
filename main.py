@@ -5,6 +5,7 @@ from grid import Grid
 from layer_util import get_layers, Layer
 from layers import lighten
 from layer_store import *
+from undo import UndoTracker
 
 class MyWindow(arcade.Window):
     """ Painter Window """
@@ -288,7 +289,7 @@ class MyWindow(arcade.Window):
 
     def on_init(self):
         """Initialisation that occurs after the system initialisation."""
-        self.grid = Grid(self.draw_style, self.GRID_SIZE_X, self.GRID_SIZE_Y)
+        pass
 
     def on_reset(self):
         """Called when a window reset is requested."""
@@ -305,8 +306,7 @@ class MyWindow(arcade.Window):
         px: x position of the brush.
         py: y position of the brush.
         """
-
-        #self.grid[px][py].add(layer)
+        self.grid.manhattan_distance(layer,px,py)
 
     def on_undo(self):
         """Called when an undo is requested."""

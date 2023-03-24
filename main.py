@@ -5,7 +5,7 @@ from grid import Grid
 from layer_util import get_layers, Layer
 from layers import lighten
 from layer_store import *
-from undo import UndoTracker
+from undo import *
 
 class MyWindow(arcade.Window):
     """ Painter Window """
@@ -310,11 +310,11 @@ class MyWindow(arcade.Window):
 
     def on_undo(self):
         """Called when an undo is requested."""
-        pass
+        self.grid.undo()
 
     def on_redo(self):
         """Called when a redo is requested."""
-        pass
+        self.grid.redo()
 
     def on_special(self):
         """Called when the special action is requested."""

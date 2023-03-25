@@ -64,6 +64,9 @@ class SetLayerStore(LayerStore):
         """
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
+
+        Time complexity : O(1)
+        There is no loop and no reversive calls.
         """
 
         # if layer is None or layer.bg is different with layer.bg,
@@ -84,6 +87,9 @@ class SetLayerStore(LayerStore):
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
+
+        Time complexity : O(1)
+        There is no loop and no reversive calls.)
         """
  
         # if self.layer is None, return start.
@@ -110,6 +116,9 @@ class SetLayerStore(LayerStore):
         The erase function returns true if the LayerStore was actually changed.
 
         For example: erase(invert)
+
+        Time complexity : O(1)
+        There is no loop and no reversive calls.
         """
 
         # If self.layer is None, the LayerStore wont be changed anything.
@@ -130,6 +139,9 @@ class SetLayerStore(LayerStore):
         The special mode on a SetLayerStore keeps the current layer,
         but always applies an inversion of the colours after the layer has been applied. 
         So if previously your Layer output (100, 100, 100) , then it would now output (155, 155, 155).
+        
+        Time complexity : O(1)
+        There is no loop and no reversive calls.
         """
 
         #If special function is called. We will make the switch is False again.
@@ -171,6 +183,9 @@ class AdditiveLayerStore(LayerStore):
         Returns true if the LayerStore was actually changed.
 
         For example, s.add(black)
+
+        Time complexity : O(1)
+        There is no loop and no reversive calls.
         """
 
         # First, I am going to check the queue is full or not.
@@ -188,13 +203,18 @@ class AdditiveLayerStore(LayerStore):
     def get_color(self, start, timestamp, x, y) -> tuple[int, int, int]:
         """
         Returns the colour this square should show, given the current layers.
+
+        Time complexity: O(n), where n is the length of the queue. 
+
+        The "get_color" function iterates over each element in the queue and applies a function to it. 
+        Furthermore, the complexity of applying a function to an element is O(1).
+        Therefore, the overall time complexity of the function is O(n).
         """
 
         # If the queue is empty, I will return start.
         if self.queue.is_empty():
             return start
  
-
         # From the "queue.front" to "queue.front+queue.length"
         # It means we will check all the value that is not empty.
         for i in range(self.queue.front,self.queue.length+self.queue.front):
@@ -212,16 +232,24 @@ class AdditiveLayerStore(LayerStore):
 
     def erase(self, layer: Layer) -> bool:
         """
-        Complete the erase action with this layer, Returns true if the LayerStore was actually changed.
+        The erase action with this layer, Returns true if the LayerStore was changed.
         
         The argument for erase does not matter for an AdditiveLayerStore,
         because as per assignment brief, it always removes the oldest remaining layer.
+
+        Time complexity: O(1)
+
+        The function removes the oldest remaining layer from the queue.
+        It can be done in constant time regardless of the size of the queue.
         """
 
-
+        # If the queue is empty, there is nothing to erase.
+        # Therefore return False.
         if self.queue.is_empty(): 
             return False
         
+        # Else, That means we need to erase the latest one.
+        # Therefore we will return true after we serve.
         else: 
             self.queue.serve()
             return True
@@ -229,20 +257,30 @@ class AdditiveLayerStore(LayerStore):
     def special(self):
         """
         Special mode. Different for each store implementation.
+
+        It uses the stack to create a reversed queue.
+
+        1. it serves from the self.queue and push to special_stack.
+
+        2. the index in special_stack will be pop, and appended again to self.queue
+
+        Time complexity: O(n), where n is the length of the queue.
+
+        The "special" iterates each element in the queue. 
+        The time complexity of each operation is O(1).
+        Therefore, the overall time complexity of the function is O(n).
         """
 
-        # first, we have queue
-        # Queue : [R, L1, L2] -> serve (return item)
-        # item -> push to stack [R, L1, L2]
-        # Stack : pop -> push to another stack [L2, L1, R]
-
+        # Temporary stack, making for reverse array. Last In First Out.
         special_stack = ArrayStack(self.queue.length)
 
-        # the number of length, they will continue push from that we served.
+        # The number of length, they will continue push to stack from that we served in queue.
         for i in range(self.queue.length):
             special_stack.push(self.queue.serve())
 
-        # now we have stack. still need to pop and push again.
+        # Now we have stack.
+        # Again, need to append to queue from the stack we pop.
+        # Therefore, it will be reversed queue. 
         for i in range(special_stack.length):
             self.queue.append(special_stack.pop())
 
@@ -268,9 +306,14 @@ class SequenceLayerStore(LayerStore):
         """
         Add a layer to the store.
         Returns true if the LayerStore was actually changed.
+
+        Time complexity: O(n), where the n is length of the list.
+
+        "add" function iteraties each element in the list and performs on each element.
+        Each time complexity of operation is O(1).
+        Therefore, the overall time complexity is O(n).
         """
 
-        
         for i in range(self.list.length):
             
             # Make the "key_value" for check list[i].key
@@ -296,6 +339,13 @@ class SequenceLayerStore(LayerStore):
 
         """
         Returns the colour this square should show, given the current layers.
+
+        Time complexity: O(n), where n is length of the list.
+
+        The "get_color" function iterates each element in the list. 
+        The time complexity of element is O(1).
+        Therefore, the overall time complexity is O(n).
+
         """
 
         # If there is nothing (checked with length), then return start color.
@@ -320,6 +370,14 @@ class SequenceLayerStore(LayerStore):
         """
         Complete the erase action with this layer
         Returns true if the LayerStore was actually changed.
+
+        Time complexity: O(n), where n is length of the list.
+
+        The "erase" function iterates each element in the list.
+        It check one by one, the number of element in the list.
+        Also, the each operation time complexity is O(1).
+
+        Therefore, the overall time complexity is O(1).
         """
 
         #The number of length of list.
@@ -339,6 +397,14 @@ class SequenceLayerStore(LayerStore):
     def special(self):  
         """
         Special mode. Different for each store implementation.
+
+        Time complexity: O(n log n), where n is the length of the list.
+        
+        n : it checks the number of elements in the list by n.
+        log n : this "special" function compare elements in the list to each other and make it sort in _index_to_add.
+
+        Therefore, the time complexity is n log n.
+
         """
         # I am going to make new sorted list, the length is based on self.list.length
         alpha_sort = ArraySortedList(self.list.length)
@@ -346,6 +412,7 @@ class SequenceLayerStore(LayerStore):
         if len(self.list) > 0 : 
 
         # The number of length of list.
+        # time complexity O(n)
             for i in range(self.list.length):
                 list_item = self.list[i]
                 
@@ -357,6 +424,8 @@ class SequenceLayerStore(LayerStore):
 
                 #based on the sort, add into alpha_sort
                 # so the value will be sorted with alphabetically.  
+                # this part is the time complexity: O(log n)
+                # Because in add function, it uses index_to_add (log n part).
                 alpha_sort.add(ListItem(value, key))
                 
             # if the number of length is odd number

@@ -86,7 +86,6 @@ class Grid:
                 if distance <= self.brush_size:
                     self.grid[x][y].add(layer)
 
-
     def __getitem__(self, i):
         return self.grid[i]
 

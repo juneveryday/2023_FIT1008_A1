@@ -7,7 +7,6 @@ from data_structures.stack_adt import ArrayStack
 from data_structures.array_sorted_list import ArraySortedList
 from data_structures.sorted_list_adt import ListItem
 
-
 class LayerStore(ABC):
 
     def __init__(self) -> None:
@@ -89,28 +88,17 @@ class SetLayerStore(LayerStore):
         Returns the colour this square should show, given the current layers.
 
         Time complexity : O(1)
-        There is no loop and no reversive calls.)
+        There is no loop and no reversive calls.
         """
- 
-        # if self.layer is None, return start.
-        if self.layer == None:
-            return start
+        if self.layer is not None:
+            start = self.layer.apply(start,timestamp,x,y)
 
-        # if this get_color function is called after we used special function.
-        if self.special_switch == True:
+        if self.special_switch:
+            start = invert.apply(start,timestamp,x,y)
 
-            # new_bg will calculate each index from tuple.
-            # (a,b,c) - (x,y,z) -> (a-x), (b-y), (c-z)
-            new_bg = (self.layer.bg[0]-start[0], self.layer.bg[1]-start[1], self.layer.bg[2]-start[2])
-
-            # it will return the value after we apply to new_bg.
-            return invert.apply(new_bg,timestamp,x,y)
-            
-        # if special_switch is not called, just apply start.
-        else:
-            return self.layer.apply(start,timestamp,x,y)
+        return start 
         
-
+   
     def erase(self, layer: Layer) -> bool:
         """
         The erase function returns true if the LayerStore was actually changed.

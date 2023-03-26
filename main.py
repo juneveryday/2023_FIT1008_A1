@@ -6,7 +6,7 @@ from layer_util import get_layers, Layer
 from layers import lighten
 from layer_store import *
 from undo import *
-
+from replay import *
 class MyWindow(arcade.Window):
     """ Painter Window """
 
@@ -322,14 +322,14 @@ class MyWindow(arcade.Window):
 
     def on_replay_start(self):
         """Called when the replay starting is requested."""
-        pass
+        self.grid.add_action()
 
     def on_replay_next_step(self) -> bool:
         """
         Called when the next step of the replay is requested.
         Returns whether the replay is finished.
         """
-        return True
+        pass
 
     def on_increase_brush_size(self):
         """Called when an increase to the brush size is requested."""

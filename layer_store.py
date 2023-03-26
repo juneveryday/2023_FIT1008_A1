@@ -303,10 +303,12 @@ class SequenceLayerStore(LayerStore):
     """
     Each layer type is either applied / not applied, and is applied in order of index.
     
+    The colour of the Layer store is calculated by applying each Layer which is currently "applying",
+    in order based on their index (accessible through layer.index. 
+    The index is a unique integer from 0 to len(get_layers())-1,
+    which is defined when the layer is registered ).
+    
     """
-
-    # I used the ArraySortedList for SequenceLayerStore.
-    # The maximum_capacity will be 9, cuz the the number of layers is total 9.
     def __init__(self) -> None:
         self.list = ArraySortedList(9)
 

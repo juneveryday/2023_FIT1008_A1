@@ -10,11 +10,6 @@ class ReplayTracker:
 
 
     def start_replay(self) -> None:
-        """
-        Called whenever we should stop taking actions, and start playing them back.
-
-        Useful if you have any setup to do before `play_next_action` should be called.
-        """
         pass
 
     def add_action(self, action: PaintAction, is_undo: bool=False) -> None:
@@ -23,25 +18,43 @@ class ReplayTracker:
 
         `is_undo` specifies whether the action was an undo action or not.
         Special, Redo, and Draw all have this is False.
+
+        Time complexity : O(1)
+
+        "add_action" function has all constant time complexity.
         """
+        # It makes the listitem based on action and boolean.
         action = ListItem(action, is_undo)
+
+        # Append the action to the replay_sample_list.
         self.replay_sample_list.append(action)
-    
+
     def play_next_action(self, grid: Grid) -> bool:
         """
         Plays the next replay action on the grid.
         Returns a boolean.
             - If there were no more actions to play, and so nothing happened, return True.
             - Otherwise, return False.
+
+        Time complexity : O(1)
+
+        "play_next_action" function has all constant time complexity.
         """
+
+        # It checks the replay_sample_list is empty or not.
+        # If its empty, return True
         if self.replay_sample_list.is_empty():
             return True
         
-        # get action from list
+        # Get action from the list by serve.
         action = self.replay_sample_list.serve()
-        
+       
+        # If action.key is true, it means the action was undo.
+        # Therefore, it applys to undo.
         if action.key:
             action.value.undo_apply(grid)
+
+        # If action.key is false, it applys to redo.
         else:
             action.value.redo_apply(grid)
 

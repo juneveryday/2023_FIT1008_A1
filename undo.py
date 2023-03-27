@@ -10,10 +10,12 @@ class UndoTracker:
 
     The user's actions were initially saved to the undo_list, 
     and when undo was performed, they were saved to the redo_list.
+
+    Attributes : used Arraystack because it needs to undo from the lastest action. LIFO (Last In First Out)
+    - self.Undo_list : when action is added, it will be pushed to Undo_list first.
+    - self.Redo_list : when the action is undo from the Undo_list, the action will be added to Redo_list.
     '''
 
-    #The last index should out first, 
-    # so UndoTracker used Stack(Last In First Out).
     def __init__(self) -> None:
         self.Undo_list = ArrayStack(10000)
         self.Redo_list = ArrayStack(10000)
@@ -23,10 +25,16 @@ class UndoTracker:
         Adds an action to the undo tracker.
 
         If collection is already full, free to exit early and not add the action.
+        
+        Args:
+        - action: return which action is added.
 
-        Time complexity : O(1)
+        Returns:
+        - result: returns true if the Undo_list was actually changed.
 
-        There is only "constant" in "add_action" function.
+        Time complexity 
+        - Worst case: O(1), there is no loop and no reversive calls.
+        - Best case : O(1), when Undo_list is already full.
         """
 
         # After Redo if we add_action again, the inside Redo_list should be reset.
@@ -49,9 +57,12 @@ class UndoTracker:
         Undo an operation, and apply the relevant action to the grid.
         If there are no actions to undo, simply do nothing.
 
-        :return: The action that was undone, or None.
+        Returns:
+        - result: return grid which action is poped.
 
-        Time complexity : O(1)
+        Time complexity 
+        - Worst case: O(1), when it undo the grid, it doesn't care the size of input.
+        - Best case : O(1), when Undo_list is empty.
 
         The number of operations perform regardless of the size of the input.
         """
@@ -76,9 +87,13 @@ class UndoTracker:
         Redo an operation that was previously undone.
         If there are no actions to redo, simply do nothing.
 
-        :return: The action that was redone, or None.
+        Returns:
+        - result: return grid which action is poped from Redo_item.
+                               = which action it redid.
 
-        Time complexity : O(1)
+        Time complexity 
+        - Worst case: O(1), when it undo the grid, it doesn't care the size of input.
+        - Best case : O(1), when Undo_list is empty.
 
         The number of operations perform regardless of the size of the input.
         """

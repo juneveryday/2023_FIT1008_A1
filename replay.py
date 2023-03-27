@@ -5,9 +5,18 @@ from data_structures.queue_adt import CircularQueue
 from data_structures.array_sorted_list import ListItem
 
 class ReplayTracker:
+    """
+    a simpler version of the UndoTracker, keep track of every action taken (Including Undos, Redos, Drawing, and Specials)
+    when playback has started, feed all of these actions back to the game so that it can be re-run. 
+    
+    Attributes:
+        - self.replay_sample_list: Replay should be start from the oldest action to latest acton. 
+                                   Therefore, I used CircularQueue (First in First Out)
+                                   The maximum capacity will be same with undotracker.
+    """
+
     def __init__(self) -> None:
         self.replay_sample_list = CircularQueue(10000)
-
 
     def start_replay(self) -> None:
         pass
@@ -16,38 +25,46 @@ class ReplayTracker:
         """
         Adds an action to the replay.
 
-        `is_undo` specifies whether the action was an undo action or not.
-        Special, Redo, and Draw all have this is False.
+        Args
+        - action : which action is added.
+        - is_undo: specifies whether the action was an undo action or not.
 
-        Time complexity : O(1)
+        Returns:
+        - result: returns true if the Undo_list was actually changed.
 
+        Time complexity 
+        - Worst & Best case: O(1)
         "add_action" function has all constant time complexity.
         """
+
         # It makes the listitem based on action and boolean.
-        action = ListItem(action, is_undo)
+        action = ListItem(action, is_undo) #O(1)
 
         # Append the action to the replay_sample_list.
-        self.replay_sample_list.append(action)
+        self.replay_sample_list.append(action) #O(1)
 
     def play_next_action(self, grid: Grid) -> bool:
         """
         Plays the next replay action on the grid.
-        Returns a boolean.
-            - If there were no more actions to play, and so nothing happened, return True.
-            - Otherwise, return False.
 
-        Time complexity : O(1)
+        Args
+        - grid: grid ..?
 
+        Returns
+        - result: Boolean, If there were no more actions to play, and so nothing happened, return True.
+
+        Time complexity 
+        - Worst & Best case: O(1)
         "play_next_action" function has all constant time complexity.
         """
-
+       
         # It checks the replay_sample_list is empty or not.
         # If its empty, return True
-        if self.replay_sample_list.is_empty():
+        if self.replay_sample_list.is_empty(): #O(1)
             return True
         
         # Get action from the list by serve.
-        action = self.replay_sample_list.serve()
+        action = self.replay_sample_list.serve() #O(1)
        
         # If action.key is true, it means the action was undo.
         # Therefore, it applys to undo.

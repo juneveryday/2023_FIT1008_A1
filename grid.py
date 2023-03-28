@@ -79,13 +79,6 @@ class Grid:
             for layer in list:
                 layer.special()
 
-    def manhattan_distance(self,layer,px,py):
-         for x in range(self.x):
-            for y in range(self.y):
-                distance = abs(px - x) + abs(py - y)
-                if distance <= self.brush_size:
-                    self.grid[x][y].add(layer)
-
     def __getitem__(self, i):
         return self.grid[i]
 

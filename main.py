@@ -289,55 +289,110 @@ class MyWindow(arcade.Window):
     # STUDENT PART
 
     def on_init(self):
-        """Initialisation that occurs after the system initialisation."""
-        # make undotracker
+        """
+        Initialisation that occurs after the system initialisation.
+        
+        Initalize Undeotracker and ReplayTracker.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
+
         self.tracking = UndoTracker()
         self.replayer = ReplayTracker()
 
     def on_reset(self):
-        """Called when a window reset is requested."""
+        """
+        Called when a window reset is requested.
+        
+        when reset self.tracking, call the undotracker again.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         self.tracking = UndoTracker()
 
     def on_paint(self, layer: Layer, px, py):
         """
-        Called when a grid square is clicked on, 
-        which should trigger painting in the vicinity.
-        Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y) 
-        can be safely ignored.
+        Called when a grid square is clicked on, which should trigger painting in the vicinity.
+        Vicinity squares outside of the range [0, GRID_SIZE_X) or [0, GRID_SIZE_Y), can be safely ignored.
 
         layer: The layer being applied.
         px: x position of the brush.
         py: y position of the brush.
+
+         Time complexity 
+        - Worst case: O(x * y)    x and y are each range of grid, kind of domain and range 
+        - Best case : O(1)        when px and py are equal to 0.
+        
         """
 
+        # call paintaction so that we can make paintstep and use for paintaction.
         action = PaintAction()
         
-        for x in range(self.grid.x):
-            for y in range(self.grid.y):
+        for x in range(self.grid.x):                            #O(x)
+            for y in range(self.grid.y):                        #O(y)
                 man_distance = abs(px - x) + abs(py - y)
-                if man_distance <= self.grid.brush_size:
+                if man_distance <= self.grid.brush_size:        #O(1)
                     self.grid.grid[x][y].add(layer)
                     step_onpaint = PaintStep([x,y],layer)
                     action.add_step(step_onpaint)
 
+        # we add the action to each undotracker and replaytacker.
         self.tracking.add_action(action)
         self.replayer.add_action(action)
 
     def on_undo(self):
-        """Called when an undo is requested."""
+        """
+        Called when an undo is requested.
+        
+        if undo is called, add to replayer the value that we undo.
+        it saves the action that even the user erase.
+
+        Therefore, by adding action from self.tracking.undo, it will save every actions.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         
         self.replayer.add_action(self.tracking.undo(self.grid),True)
 
     def on_redo(self):
-        """Called when a redo is requested."""
+        """
+        Called when a redo is requested.
+        
+        if redo is called, add to replayer the value that we redo.
+        it saves the action that user redo.
+
+        Therefore, by adding action from self.tracking.undo, it will save every redo actions.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         self.replayer.add_action(self.tracking.redo(self.grid))
 
     def on_special(self):
-        """Called when the special action is requested."""
+        """
+        Called when the special action is requested.
+        
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         self.grid.special()
 
     def on_replay_start(self):
-        """Called when the replay starting is requested."""
+        """
+        Called when the replay starting is requested.
+        
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
 
         self.replayer.start_replay()
 
@@ -345,17 +400,33 @@ class MyWindow(arcade.Window):
         """
         Called when the next step of the replay is requested.
         Returns whether the replay is finished.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
         """
 
         return self.replayer.play_next_action(self.grid)
         
 
     def on_increase_brush_size(self):
-        """Called when an increase to the brush size is requested."""
+        """
+        Called when an increase to the brush size is requested.
+
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         self.grid.increase_brush_size()
 
     def on_decrease_brush_size(self):
-        """Called when a decrease to the brush size is requested."""
+        """
+        Called when a decrease to the brush size is requested.
+        
+        Time complexity 
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
+        """
         self.grid.decrease_brush_size()
 
 def main():

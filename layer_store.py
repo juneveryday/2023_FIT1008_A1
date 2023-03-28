@@ -6,7 +6,7 @@ from data_structures.queue_adt import CircularQueue
 from data_structures.stack_adt import ArrayStack
 from data_structures.array_sorted_list import ArraySortedList
 from data_structures.sorted_list_adt import ListItem
-
+from layer_util import get_layers
 class LayerStore(ABC):
 
     def __init__(self) -> None:
@@ -167,7 +167,7 @@ class AdditiveLayerStore(LayerStore):
     """
 
     def __init__(self) -> None:
-        self.queue = CircularQueue(900)
+        self.queue = CircularQueue(100*len(get_layers()))
         
     def add(self, layer: Layer) -> bool:
         """
@@ -311,7 +311,7 @@ class SequenceLayerStore(LayerStore):
     
     """
     def __init__(self) -> None:
-        self.list = ArraySortedList(9)
+        self.list = ArraySortedList(len(get_layers()))
 
     def add(self, layer: Layer) -> bool:
         """

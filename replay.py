@@ -48,7 +48,7 @@ class ReplayTracker:
         Plays the next replay action on the grid.
 
         Args
-        - grid: grid ..?
+        - grid: grid
 
         Returns
         - result: Boolean, If there were no more actions to play, and so nothing happened, return True.

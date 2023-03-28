@@ -7,6 +7,7 @@ from layers import lighten
 from layer_store import *
 from undo import *
 from replay import *
+from action import *
 class MyWindow(arcade.Window):
     """ Painter Window """
 
@@ -289,11 +290,13 @@ class MyWindow(arcade.Window):
 
     def on_init(self):
         """Initialisation that occurs after the system initialisation."""
-        pass
+        # make undotracker
+        self.tracking = UndoTracker()
+        self.replayer = ReplayTracker()
 
     def on_reset(self):
         """Called when a window reset is requested."""
-        pass
+        self.tracking = UndoTracker()
 
     def on_paint(self, layer: Layer, px, py):
         """
@@ -306,15 +309,28 @@ class MyWindow(arcade.Window):
         px: x position of the brush.
         py: y position of the brush.
         """
-        self.grid.manhattan_distance(layer,px,py)
+
+        action = PaintAction()
+        
+        for x in range(self.grid.x):
+            for y in range(self.grid.y):
+                man_distance = abs(px - x) + abs(py - y)
+                if man_distance <= self.grid.brush_size:
+                    self.grid.grid[x][y].add(layer)
+                    step_onpaint = PaintStep([x,y],layer)
+                    action.add_step(step_onpaint)
+
+        self.tracking.add_action(action)
+        self.replayer.add_action(action)
 
     def on_undo(self):
         """Called when an undo is requested."""
-        self.grid.undo()
+        
+        self.replayer.add_action(self.tracking.undo(self.grid),True)
 
     def on_redo(self):
         """Called when a redo is requested."""
-        self.grid.redo()
+        self.replayer.add_action(self.tracking.redo(self.grid))
 
     def on_special(self):
         """Called when the special action is requested."""
@@ -322,14 +338,17 @@ class MyWindow(arcade.Window):
 
     def on_replay_start(self):
         """Called when the replay starting is requested."""
-        self.grid.add_action()
+
+        self.replayer.start_replay()
 
     def on_replay_next_step(self) -> bool:
         """
         Called when the next step of the replay is requested.
         Returns whether the replay is finished.
         """
-        pass
+
+        return self.replayer.play_next_action(self.grid)
+        
 
     def on_increase_brush_size(self):
         """Called when an increase to the brush size is requested."""

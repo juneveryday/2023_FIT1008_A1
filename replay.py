@@ -27,7 +27,7 @@ class ReplayTracker:
 
         Args
         - action : which action is added.
-        - is_undo: specifies whether the action was an undo action or not.
+        - is_undo: (bool) specifies whether the action was an undo action or not.
 
         Returns:
         - result: returns true if the Undo_list was actually changed.

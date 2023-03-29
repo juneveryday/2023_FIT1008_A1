@@ -90,7 +90,7 @@ class SetLayerStore(LayerStore):
 
         Args:
         - start: tuple that explain inital color of layer.
-        - timestamp: time (?)
+        - timestamp: layers that are animated.
         - x: integer that is in the horizontal position of the layer.
         - y: integer that is in the vertical position of the layer.
 
@@ -247,8 +247,8 @@ class AdditiveLayerStore(LayerStore):
         - result: the colour this square should show, given the currexnt layers.
 
         Time complexity 
-        - Worst case: O(n), where n is the length of the queue. 
-        - Best case: O(1), where n is the length of the queue is empty.
+        - Worst & Best case: O(1)
+        There is no loop and no reversive calls.
         """
 
         # If the queue is empty, there is nothing to erase.

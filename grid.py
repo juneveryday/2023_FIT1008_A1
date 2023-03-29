@@ -99,15 +99,16 @@ class Grid:
         Activate the special affect on all grid squares.
 
         Time complexity
-        - Worst & Best case: O(k * n^2)
+        - the time complexity will be depends on which layerstore selected.
+        - Worst case: O(n^2 m log m)
+        - Best case : O(n^2)
 
-         k: time complexity of special.
-         n^2 : there is 2 loop in special function.
-
+        - n : the number of list.
+        - m : the nubmer of elements in special.
         """
-        for list in self.grid:                              #O(1)
-            for layer in list:                              #O(1)
-                layer.special()                             #O(1)
+        for list in self.grid:                              #O(n)
+            for layer in list:                              #O(n)
+                layer.special()                             #O(m log m)
 
     def __getitem__(self, i):
         '''

@@ -332,17 +332,20 @@ class MyWindow(arcade.Window):
         # call paintaction so that we can make paintstep and use for paintaction.
         action = PaintAction()
         
-        for x in range(self.grid.x):                            #O(x)
-            for y in range(self.grid.y):                        #O(y)
-                man_distance = abs(px - x) + abs(py - y)
-                if man_distance <= self.grid.brush_size:        #O(1)
-                    if self.grid.grid[x][y].add(layer) == True:
-                        step_onpaint = PaintStep([x,y],layer)
-                        action.add_step(step_onpaint)
+        for x in range(self.grid.x):                                    #O(x)
+            for y in range(self.grid.y):                                #O(y)
+
+                man_distance = abs(px - x) + abs(py - y)                #O(1)
+
+                if man_distance <= self.grid.brush_size:                #O(1)
+                    if self.grid.grid[x][y].add(layer) == True:         #O(1)
+
+                        step_onpaint = PaintStep([x,y],layer)           #O(1)
+                        action.add_step(step_onpaint)                   #O(1)
 
         # we add the action to each undotracker and replaytacker.
-        self.tracking.add_action(action)
-        self.replayer.add_action(action)
+        self.tracking.add_action(action)                                #O(1)
+        self.replayer.add_action(action)                                #O(1)
 
     def on_undo(self):
         """
@@ -358,7 +361,7 @@ class MyWindow(arcade.Window):
         There is no loop and no reversive calls.
         """
         
-        self.replayer.add_action(self.tracking.undo(self.grid),True)
+        self.replayer.add_action(self.tracking.undo(self.grid),True)    #O(1)
 
     def on_redo(self):
         """
@@ -373,7 +376,7 @@ class MyWindow(arcade.Window):
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        self.replayer.add_action(self.tracking.redo(self.grid))
+        self.replayer.add_action(self.tracking.redo(self.grid))         #O(1)
 
     def on_special(self):
         """
@@ -383,7 +386,7 @@ class MyWindow(arcade.Window):
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        self.grid.special()
+        self.grid.special()                                             #O(1)
 
     def on_replay_start(self):
         """
@@ -394,7 +397,7 @@ class MyWindow(arcade.Window):
         There is no loop and no reversive calls.
         """
 
-        self.replayer.start_replay()
+        self.replayer.start_replay()                                    #O(1)
 
     def on_replay_next_step(self) -> bool:
         """
@@ -406,7 +409,7 @@ class MyWindow(arcade.Window):
         There is no loop and no reversive calls.
         """
 
-        return self.replayer.play_next_action(self.grid)
+        return self.replayer.play_next_action(self.grid)                #O(1)
         
 
     def on_increase_brush_size(self):
@@ -417,7 +420,7 @@ class MyWindow(arcade.Window):
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        self.grid.increase_brush_size()
+        self.grid.increase_brush_size()                                 #O(1)
 
     def on_decrease_brush_size(self):
         """
@@ -427,7 +430,7 @@ class MyWindow(arcade.Window):
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        self.grid.decrease_brush_size()
+        self.grid.decrease_brush_size()                                 #O(1)
 
 def main():
     """ Main function """

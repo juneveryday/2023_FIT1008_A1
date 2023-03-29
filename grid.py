@@ -78,8 +78,8 @@ class Grid:
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        if self.brush_size < self.MAX_BRUSH:
-            self.brush_size += 1
+        if self.brush_size < self.MAX_BRUSH:                #O(1)
+            self.brush_size += 1                            #O(1)
 
     def decrease_brush_size(self):
         """
@@ -91,8 +91,8 @@ class Grid:
         - Worst & Best case: O(1)
         There is no loop and no reversive calls.
         """
-        if self.brush_size > self.MIN_BRUSH:
-            self.brush_size -= 1
+        if self.brush_size > self.MIN_BRUSH:                #O(1)
+            self.brush_size -= 1                            #O(1)
 
     def special(self):
         """
@@ -105,9 +105,9 @@ class Grid:
          n^2 : there is 2 loop in special function.
 
         """
-        for list in self.grid:
-            for layer in list:
-                layer.special()
+        for list in self.grid:                              #O(1)
+            for layer in list:                              #O(1)
+                layer.special()                             #O(1)
 
     def __getitem__(self, i):
         '''
@@ -116,5 +116,5 @@ class Grid:
         There is no loop and no reversive calls.
         '''
         
-        return self.grid[i]
+        return self.grid[i]                                 #O(1)
 

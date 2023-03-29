@@ -336,9 +336,9 @@ class MyWindow(arcade.Window):
             for y in range(self.grid.y):                        #O(y)
                 man_distance = abs(px - x) + abs(py - y)
                 if man_distance <= self.grid.brush_size:        #O(1)
-                    self.grid.grid[x][y].add(layer)
-                    step_onpaint = PaintStep([x,y],layer)
-                    action.add_step(step_onpaint)
+                    if self.grid.grid[x][y].add(layer) == True:
+                        step_onpaint = PaintStep([x,y],layer)
+                        action.add_step(step_onpaint)
 
         # we add the action to each undotracker and replaytacker.
         self.tracking.add_action(action)

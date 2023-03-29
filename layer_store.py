@@ -405,7 +405,7 @@ class SequenceLayerStore(LayerStore):
         - result: returns true if the LayerStore was actually changed.
 
         Time complexity 
-        - Worst case: O(n), when the layer is in the last index in layer. (n times) 
+        - Worst case: O(n^2), when the layer is in the last index in layer. (n times) 
         - Best case: O(1), where n is the length of the queue is empty.
   
         The "erase" function iterates each element in the list.
@@ -421,7 +421,7 @@ class SequenceLayerStore(LayerStore):
 
                 #As using the funtion "delete_at_index",
                 #  the index i+1 will be shuffle_left.
-                self.list.delete_at_index(i)                                #O(1)
+                self.list.delete_at_index(i)                                #O(n)
                 return True                                                 #O(1)
             
         return False                                                        #O(1)

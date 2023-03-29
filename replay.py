@@ -16,7 +16,7 @@ class ReplayTracker:
     """
 
     def __init__(self) -> None:
-        self.replay_sample_list = CircularQueue(10000)
+        self.replay_sample_list = CircularQueue(10000)                  #O(1)
 
     def start_replay(self) -> None:
         pass
@@ -38,10 +38,10 @@ class ReplayTracker:
         """
 
         # It makes the listitem based on action and boolean.
-        action = ListItem(action, is_undo) #O(1)
+        action = ListItem(action, is_undo)                              #O(1)
 
         # Append the action to the replay_sample_list.
-        self.replay_sample_list.append(action) #O(1)
+        self.replay_sample_list.append(action)                          #O(1)
 
     def play_next_action(self, grid: Grid) -> bool:
         """
@@ -60,22 +60,22 @@ class ReplayTracker:
        
         # It checks the replay_sample_list is empty or not.
         # If its empty, return True
-        if self.replay_sample_list.is_empty(): #O(1)
+        if self.replay_sample_list.is_empty():                          #O(1)
             return True
         
         # Get action from the list by serve.
-        action = self.replay_sample_list.serve() #O(1)
+        action = self.replay_sample_list.serve()                        #O(1)
        
         # If action.key is true, it means the action was undo.
         # Therefore, it applys to undo.
-        if action.key:
-            action.value.undo_apply(grid)
+        if action.key:                                                  #O(1)
+            action.value.undo_apply(grid)                               #O(1)
 
         # If action.key is false, it applys to redo.
         else:
-            action.value.redo_apply(grid)
+            action.value.redo_apply(grid)                               #O(1)
 
-        return False
+        return False                                                    #O(1)
         
 
         

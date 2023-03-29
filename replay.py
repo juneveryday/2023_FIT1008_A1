@@ -54,8 +54,10 @@ class ReplayTracker:
         - result: Boolean, If there were no more actions to play, and so nothing happened, return True.
 
         Time complexity 
-        - Worst & Best case: O(1)
-        "play_next_action" function has all constant time complexity.
+        time complexity is depends on action.key is True or False.
+        - Worst case: O(undo_apply) or O(redo_apply)
+        - Best case: O(1)
+        
         """
        
         # It checks the replay_sample_list is empty or not.
@@ -69,11 +71,11 @@ class ReplayTracker:
         # If action.key is true, it means the action was undo.
         # Therefore, it applys to undo.
         if action.key:                                                  #O(1)
-            action.value.undo_apply(grid)                               #O(1)
+            action.value.undo_apply(grid)                               #O(undo_apply)
 
         # If action.key is false, it applys to redo.
         else:
-            action.value.redo_apply(grid)                               #O(1)
+            action.value.redo_apply(grid)                               #O(redo_apply)
 
         return False                                                    #O(1)
         

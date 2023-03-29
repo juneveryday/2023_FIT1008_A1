@@ -17,8 +17,8 @@ class UndoTracker:
     '''
 
     def __init__(self) -> None:
-        self.Undo_list = ArrayStack(10000)
-        self.Redo_list = ArrayStack(10000)
+        self.Undo_list = ArrayStack(10000)                          #O(1)
+        self.Redo_list = ArrayStack(10000)                          #O(1)
         
     def add_action(self, action: PaintAction) -> None:
         """
@@ -38,18 +38,18 @@ class UndoTracker:
         """
 
         # After Redo if we add_action again, the inside Redo_list should be reset.
-        if self.Redo_list.length > 0:
-            self.Redo_list = ArrayStack(10000)
+        if self.Redo_list.length > 0:                               #O(1)
+            self.Redo_list = ArrayStack(10000)                      #O(1)
         
         # If Undo_list is full, it cannot add anymore, so return False
-        if self.Undo_list.is_full():
-            return False
+        if self.Undo_list.is_full():                                #O(1)
+            return False                                            #O(1)
         
         # Else, it still can push to Undo_list.
         # After we push, return True.
         else:
-            self.Undo_list.push(action)
-            return True
+            self.Undo_list.push(action)                             #O(1)                      
+            return True                                             #O(1)
     
 
     def undo(self, grid: Grid) -> PaintAction|None:
@@ -61,24 +61,25 @@ class UndoTracker:
         - result: return grid which action is poped.
 
         Time complexity 
-        - Worst case: O(1), when it undo the grid, it doesn't care the size of input.
+        - Worst case: O(undo_apply), the worst case will be depends on undo_apply function.
         - Best case : O(1), when Undo_list is empty.
 
         The number of operations perform regardless of the size of the input.
         """
 
         # if Undo_list is empty, return None.
-        if self.Undo_list.is_empty():
-            return None
+        if self.Undo_list.is_empty():                               #O(1)
+            return None                                             #O(1)
         
         # Undo_item is that we pop from the Undo_list.
-        Undo_item = self.Undo_list.pop()
+        Undo_item = self.Undo_list.pop()                            #O(1)
 
         # After that, apply undo by using undo_apply.
-        Undo_item.undo_apply(grid)
+        Undo_item.undo_apply(grid)                                  #O(undo_apply)                      
 
         # Push the item from undo to Redo_list.
-        self.Redo_list.push(Undo_item)
+        self.Redo_list.push(Undo_item)                              #O(1)                 
+
 
         return Undo_item
 
@@ -92,23 +93,23 @@ class UndoTracker:
                                = which action it redid.
 
         Time complexity 
-        - Worst case: O(1), when it undo the grid, it doesn't care the size of input.
+        - Worst case: O(redo_apply), the worst case will be depends on redo_apply function.
         - Best case : O(1), when Undo_list is empty.
 
         The number of operations perform regardless of the size of the input.
         """
 
         # if Redo_list is empty, return None.
-        if self.Redo_list.is_empty():
-            return None
+        if self.Redo_list.is_empty():                               #O(1)
+            return None                                             #O(1)
 
         # Redo_item is that we pop from the Redo_list.
-        Redo_item = self.Redo_list.pop()
+        Redo_item = self.Redo_list.pop()                            #O(1)
 
         # After that, apply redo by using redo_apply.
-        Redo_item.redo_apply(grid)
+        Redo_item.redo_apply(grid)                                  #O(redo_apply)
 
         # Push the item from the redo to Redo_list.
-        self.Undo_list.push(Redo_item)
+        self.Undo_list.push(Redo_item)                              #O(1)
 
-        return Redo_item
+        return Redo_item                                            #O(1)

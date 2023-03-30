@@ -100,7 +100,7 @@ class Grid:
 
         Time complexity
         - the time complexity will be depends on which layerstore selected.
-        - Worst case: O(n^2 m log m)
+        - Worst case: O(n^2 m log m) - sequencelayerstore
         - Best case : O(n^2)
 
         - n : the number of list.
